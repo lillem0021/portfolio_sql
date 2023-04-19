@@ -1,0 +1,160 @@
+create table groups_ 
+			(group_id int not null primary key auto_increment,
+			curator_id int,
+			course int);
+ALTER TABLE groups_ AUTO_INCREMENT=200; 
+create table duty 
+			(duty_id int not null primary key auto_increment,
+			start_date datetime,
+			end_date datetime,
+            group_id int,
+            foreign key (group_id) references groups_ (group_id));
+create table curators 
+			(curator_id int not null primary key auto_increment,
+			full_name varchar(225),
+			cabinet int,
+            phone_number varchar(255),
+            salary float,
+            birth_date date); 
+alter table groups_ 
+add foreign key (curator_id) references curators (curator_id);          
+create table students 
+			(student_id int not null primary key auto_increment,
+			last_name varchar(225),
+            phone_number varchar(255),
+            birth_date date,
+            group_id int); 
+alter table students 
+add foreign key (group_id) references groups_ (group_id); 
+create table progress 
+			(id int not null primary key auto_increment,
+			student_id int,
+            subject_id int,
+            grade int);            
+alter table progress 
+add foreign key (student_id) references students (student_id); 
+alter table progress 
+add foreign key (subject_id) references subjects (subject_id);         
+create table subjects 
+			(subject_id int not null primary key auto_increment,
+			subject_name varchar(225),
+            teacher_id int);          
+alter table subjects 
+add foreign key (teacher_id) references teachers (teacher_id);         
+create table teachers 
+			(teacher_id int not null primary key auto_increment,
+			full_name varchar(225),
+            cabinet int);		
+create table library 
+			(id int not null primary key auto_increment,
+			student_id int,
+            book_id int,
+            book_return int,
+            date_return date,
+            fine float);        
+alter table library 
+add foreign key (student_id) references students (student_id);
+alter table library 
+add foreign key (book_id) references books (book_id);         
+create table books (book_id int not null primary key auto_increment,
+					book_name varchar(225),
+					author varchar(225));
+-------------------------------------------------------
+insert into curators (full_name,cabinet,phone_number,salary,birth_date) 
+			values ('Иванова Снежанна Вениаминовна',328,'158.239.854',30520,'1964.06.12'),
+				   ('Петрова Светлана Владимировна',102,'458.789.526',35040,'1970.07.02'),
+				   ('Рахимгалиева Альфинур Тагировна',103,'745.962.589',25630,'1974.08.22'),
+				   ('Ворох Ольга Игоревна',104,'147.963.589',27530,'1978.12.25'),
+                   ('Игнатьев Антон Николаевич',105,'158.785.321',19620,'1979.02.26'),
+                   ('Старостин Александр Степанович',106,'741.982.357',23650,'1982.10.03');
+insert into teachers (full_name,cabinet)
+			select full_name,cabinet from curators;
+insert into teachers (full_name,cabinet)
+			values ('Фролов Арсений Богданович',107),
+				   ('Власов Инокентий Сергеевич',108),
+                   ('Максимова Екатерина Андреевна ',328);
+insert into students (last_name,phone_number,birth_date,group_id)
+			values('Фокина','458.698.785','1993.04.21',205),
+				  ('Ворох','856.412.745','1993.04.18',205),
+                  ('Никитина','148.123.963','1993.10.12',205),
+                  ('Имамутдинова','145.745.963','1993.08.10',205),
+                  ('Сабуров','748.523.963','1992.06.25',200),
+                  ('Ситникова','589.632.789','1992.07.23',200),
+                  ('Арбузова','984.741.693','1994.09.02',200),
+                  ('Медведева','985.741.985','1994.08.01',201),
+				  ('Куркина','896.523.369','1994.12.30',201),
+                  ('Нечаева','458.639.489','1994.01.20',201),
+				  ('Анисимов','789.632.741','1990.11.25',202),
+                  ('Батурин','987.456.985','1990.02.12',202),
+                  ('Валлиулова','741.852.963','1990.03.16',202),
+                  ('Давлетшина','147.526.951','1990.03.01',203),
+                  ('Киселева','125.632.957','1990.05.26',203),
+                  ('Романова','965.787.856','1990.04.24',203),
+                  ('Косарева','785.145.369','1997.06.23',204),
+				  ('Биша','963.368.357','1997.01.02',204),
+				  ('Дунь','365.741.258','1997.11.15',204),
+				  ('Коткова','894.125.369','1998.05.18',206),
+                  ('Рублев','985.147.258','1998.12.01',206),
+                  ('Куляскин','956.569.125','1998.12.30',206),
+                  ('Карташов','147.956.125','1998.01.04',207),
+                  ('Растяпин','147.956.145','1998.10.23',207),
+				  ('Тупиков','147.956.165','1998.05.28',207);
+				  ('Малкина','158.698.589','1995.01.21',208),
+				  ('Волкова','569.412.523','1995.02.18',208),
+                  ('Краснова','148.123.523','1995.03.12',208),
+                  ('Морозова','145.745.569','1995.04.10',208),
+                  ('Макарова','748.478.963','1995.05.25',209),
+                  ('Дятлов','589.632.596','1995.06.23',209),
+                  ('Рябухо','984.741.415','1995.07.02',209);
+insert into groups_ (curator_id,course)
+			values (1,2),
+				   (1,3),
+                   (2,2),
+                   (2,4),
+                   (3,5),
+                   (3,1),
+                   (4,1),
+                   (5,2),
+                   (5,3),
+                   (6,4);
+alter table groups_ add column mark varchar(20) after course;			   
+insert into duty (start_date,end_date,group_id)
+			values ('2020.01.13','2021.12.20',200),
+				   ('2022.01.21','2022.01.31',201),
+                   ('2022.02.01','2022.02.10',202),
+                   ('2022.02.11','2022.02.21',203),
+				   ('2022.02.22','2022.03.02',204),
+				   ('2022.03.03','2022.03.13',205),
+                   ('2022.03.14','2022.03.24',206),
+                   ('2022.03.25','2022.04.03',207);
+insert into subjects (subject_name,teacher_id)
+			values ('Математика',1),
+				   ('Физика',2),
+                   ('Общая химия',3),
+                   ('Аналитическая химия',4),
+                   ('Ботаника',6);
+insert into progress (student_id,subject_id)
+select st.student_id,
+	   su.subject_id 
+from students st
+cross join subjects su;
+update progress set grade =5
+where id  in (1,13,14,15,16,17,18,26,27,28,29,34,35,36,42,43,44,45,54,55,56,57,58,59,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110);
+update progress set grade =4
+where id  in (2,4,5,19,20,21,22,23,24,25,37,38,39,40,41,60,87,88,89,90,91,92,93,94);
+update progress set grade =3
+where id  in (3,6,7,8,9,10,11,12,30,31,32,33,46,47,48,49,50,51,52,53,76,77,78,79,80,81,82,83,84,85,86,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125);
+insert into books (book_name,author)
+			values ('Зеленая миля','Ствен Кинг'),
+				   ('Унесенные ветром','Маргатет Митчел'),
+                   ('Граф Монте-Кристо','Александр Дюма'),
+                   ('Десять негритят','Агата Кристи'),
+                   ('Мастер и Маргарита','Михаил Булгаков');
+insert into library (student_id,book_id,book_return,date_return,fine)
+			value (1,1,1,'2022.02.03',0),
+				  (2,2,0,null,null),
+				  (3,3,1,'2022.03.02',0),
+				  (4,4,1,'2022.04.01',0),
+                  (5,5,10,null,null),
+                  (10,1,0,null,null),
+				  (15,2,1,'2022.03.01',0);

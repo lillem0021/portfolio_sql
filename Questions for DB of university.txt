@@ -1,0 +1,192 @@
+select cur.full_name,
+		cur.cabinet,
+        stu.student_id,
+        stu.last_name
+from curators cur
+	inner join groups_ g
+		on (cur.curator_id=g.curator_id)
+	inner join students stu
+		on (g.group_id=stu.group_id)
+where cur.cabinet = 328;
+
+select t.full_name,
+		sub.subject_name,
+        stu.last_name,
+        p.grade
+from teachers t
+	inner join subjects sub
+		on (t.teacher_id=sub.teacher_id)
+	inner join progress p
+		on (sub.subject_id=p.subject_id)
+	inner join students stu
+		on (p.student_id=stu.student_id)
+where sub.subject_name like 'Математика' and p.grade =5;
+
+SELECT count(stu.last_name) as cnt,
+		stu.group_id,
+		stu.last_name,
+		p.grade
+FROM students stu
+        INNER JOIN progress p
+        	ON (stu.student_id = p.student_id)
+WHERE p.grade = 5
+GROUP BY stu.last_name,stu.group_id
+order by cnt desc;
+
+select  g.group_id,
+		stu.last_name,
+		sub.subject_name,
+        p.grade,
+        cur.full_name,
+        avg (p.grade) over (partition by g.group_id) as a
+from students stu
+	inner join progress p
+		on (stu.student_id=p.student_id)
+	inner join subjects sub
+			on (p.subject_id=sub.subject_id)
+	inner join groups_ g
+		on (stu.group_id=g.group_id)
+	inner join curators cur
+		on (g.curator_id=cur.curator_id)
+where sub.subject_name like 'Математика';
+
+select stu.last_name,
+		p.grade,
+		g.group_id,
+        g.mark
+from students stu
+	inner join progress p
+		on (stu.student_id=p.student_id)
+	inner join groups_ g
+		on (stu.group_id=g.group_id)
+	inner join subjects sub 
+		on (p.subject_id=sub.subject_id)
+where sub.subject_name like 'Математика' and g.mark like 'исп';
+
+select cur.full_name,
+		stu.last_name,
+        lib.book_return,
+        b.book_name
+from library lib
+	inner join students stu
+		on (lib.student_id=stu.student_id)
+	inner join groups_ g
+		on (stu.group_id=g.group_id)
+	inner join curators cur
+		on (g.curator_id=cur.curator_id)
+	inner join books b
+		on (lib.book_id=b.book_id)
+where lib.book_return=0;
+
+select count(stu.last_name) as cnt,
+		g.group_id,
+        g.mark
+from students stu
+	inner join groups_ g
+		on (stu.group_id=g.group_id) and g.mark like 'кск'
+group by g.group_id;
+
+select stu.last_name,
+        g.course,
+        g.group_id,
+        avg (p.grade)
+from students stu
+	inner join progress p
+		on (stu.student_id=p.student_id)
+	inner join groups_ g
+			on (g.group_id=stu.group_id) and g.course=2
+	inner join subjects sub
+		on (p.subject_id=sub.subject_id)
+group by stu.last_name,g.course,g.group_id;
+ 
+select  stu.student_id,
+		stu.last_name,
+        g.course +1,
+        g.group_id
+from students stu
+	inner join progress p
+		on (stu.student_id=p.student_id)
+	inner join groups_ g
+			on (g.group_id=stu.group_id) and g.course=2
+group by stu.student_id;
+
+delete stu,p
+from students stu
+	inner join progress p
+		on (stu.student_id=p.student_id)
+	inner join groups_ g
+		on (g.group_id=stu.group_id)
+where g.course=5;
+
+select *
+from students stu
+	inner join progress p
+		on (stu.student_id=p.student_id)
+	inner join groups_ g
+			on (g.group_id=stu.group_id) and g.course=5;
+    
+select substring(cur.full_name,1,(locate(' ',cur.full_name))) as last_name
+from curators cur
+	inner join groups_ g
+		on (cur.curator_id=g.curator_id)
+	inner join duty d
+		on (g.group_id=d.group_id)
+where d.start_date ='2020-01-13' and d.end_date ='2021-12-20';
+
+select cur.full_name
+from curators cur
+	inner join groups_ g
+		on (cur.curator_id=g.curator_id)
+	left join duty d
+		on (g.group_id=d.group_id)
+where d.duty_id is null;
+
+select count(stu.student_id) as cnt,
+		stu.group_id
+from curators cur
+	inner join groups_ g
+		on (cur.curator_id=g.curator_id)
+	left join duty d
+		on (g.group_id=d.group_id)
+	left join students stu
+		on (g.group_id=stu.group_id)
+where d.duty_id is null
+group by stu.group_id;
+
+select g.group_id,
+	   g.curator_id,
+       g.course,
+       d.duty_id
+from groups_ g
+	left join duty d
+		on (g.group_id=d.group_id)
+where d.duty_id is null;
+
+select g.group_id,
+	   g.curator_id,
+       g.course,
+       stu.student_id,
+       stu.last_name,
+       d.duty_id
+from groups_ g
+	left join duty d
+		on (g.group_id=d.group_id)
+	inner join students stu
+		on (g.group_id=stu.group_id)
+where d.duty_id is null;
+
+select *
+from students stu
+	inner join library lib
+		on (stu.student_id=lib.student_id) and lib.book_return =0;
+		
+update library
+set fine = 150
+where student_id=2 or student_id=5 or student_id=10;
+
+select *
+from students stu
+	inner join library lib
+		on (stu.student_id=lib.student_id) and lib.book_return =0;
+
+
